@@ -1,1 +1,41 @@
-<h!>guh<h!>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Image Board</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .post { margin: 20px; padding: 10px; border: 1px solid #ddd; }
+        img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+
+    <h1>My Image Board</h1>
+    <p><a href="https://github.com/yourusername/my-image-board/issues/new?template=post.yml">Submit a New Image</a></p>
+    <div id="posts"></div>
+
+    <script>
+        async function loadPosts() {
+            const response = await fetch("https://api.github.com/repos/yourusername/my-image-board/issues");
+            const issues = await response.json();
+            const postsDiv = document.getElementById("posts");
+
+            issues.forEach(issue => {
+                const match = issue.body.match(/!\[.*\]\((.*)\)/);
+                if (match) {
+                    const imageUrl = match[1];
+                    const post = document.createElement("div");
+                    post.className = "post";
+                    post.innerHTML = `<h3>${issue.title}</h3><img src="${imageUrl}" alt="Posted Image"><p>${issue.body}</p>`;
+                    postsDiv.appendChild(post);
+                }
+            });
+        }
+
+        loadPosts();
+    </script>
+
+</body>
+</html>
